@@ -4,6 +4,7 @@ namespace RichanFongdasen\Glide;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
+use RichanFongdasen\Glide\Facade\Glide;
 
 class GlideRequest extends FormRequest
 {
@@ -14,7 +15,7 @@ class GlideRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return app(GlideService::class)->validateRequest($this);
+        return Glide::validateRequest($this);
     }
 
     /**
