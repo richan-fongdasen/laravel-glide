@@ -100,15 +100,6 @@ class GlideService
         ]);
     }
 
-
-    public function normalizeParams(array $params): array
-    {
-        foreach ($params as $key => $value) {
-            $params[$key] = (string) $value;
-        }
-        return $params;
-    }
-
     /**
      * Process the GlideRequest.
      *
