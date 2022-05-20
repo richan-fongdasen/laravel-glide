@@ -19,18 +19,21 @@ abstract class TestCase extends BaseTest
 
         $app['config']->set('cache.default', 'array');
         $app['config']->set('glide', [
-            'asset_url_prefix' => 'assets',
-            'default_format'   => 'jpg',
-            'disks'            => [
+            'asset_url_prefix'       => 'assets',
+            'default_image_format'   => 'jpg',
+            'default_headers'        => [
+                'Cache-Control' => 'max-age=31536000, public',
+            ],
+            'disks'                  => [
                 'cache'  => 'local',
                 'source' => 'public',
             ],
-            'driver'           => 'imagick',
-            'max_image_size'   => 2048*2048,
-            'server'           => true,
-            'server_hostname'  => 'localhost',
-            'sign_key'         => 'c*pGmuHqHBFW5*4Z((x2H:]KSQ:OGgmN8MOC',
-            'url_scheme'       => 'http',
+            'driver'                 => 'imagick',
+            'max_image_size'         => 2048*2048,
+            'server'                 => true,
+            'server_hostname'        => 'localhost',
+            'sign_key'               => 'c*pGmuHqHBFW5*4Z((x2H:]KSQ:OGgmN8MOC',
+            'url_scheme'             => 'http',
         ]);
     }
 

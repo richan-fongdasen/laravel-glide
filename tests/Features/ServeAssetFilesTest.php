@@ -53,7 +53,8 @@ class ServeAssetFilesTest extends TestCase
 
         $this->get('/assets/document/super-important.pdf?s=8ff550c7dcb99792d3a56569c0c5b14d')
             ->assertOk()
-            ->assertHeader('Content-Type', 'application/pdf');
+            ->assertHeader('Content-Type', 'application/pdf')
+            ->assertHeader('Cache-Control', 'max-age=31536000, public');
     }
 
     /** @test */
@@ -64,6 +65,7 @@ class ServeAssetFilesTest extends TestCase
 
         $this->get('/assets/images/hyuna.jpg?s=693afe8ba38f60b6ca5e42e7cf5a5bb6&sharp=10&w=700')
             ->assertOk()
-            ->assertHeader('Content-Type', 'image/jpeg');
+            ->assertHeader('Content-Type', 'image/jpeg')
+            ->assertHeader('Cache-Control', 'max-age=31536000, public');
     }
 }

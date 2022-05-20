@@ -42,7 +42,7 @@ class GlideRequest extends FormRequest
         unset($params['s']);
 
         if ($default === null) {
-            $default = ['fm' => config('glide.default_format')];
+            $default = ['fm' => config('glide.default_image_format')];
         }
 
         return array_merge($default, $params);

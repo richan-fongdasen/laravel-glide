@@ -121,11 +121,13 @@ class GlideService
         $path = $request->getAssetPath();
         $params = $request->getGlideParams();
 
-        return response()->stream(function () use ($server, $path, $params) {
-            $server->outputImage($path, $params);
-        }, 200, [
+        $headers = array_merge(config('glide.default_headers'), [
             'Content-Type' => data_get(self::$mimeTypes, $request->input('fm'), 'image/jpeg'),
         ]);
+
+        return response()->stream(function () use ($server, $path, $params) {
+            $server->outputImage($path, $params);
+        }, 200, $headers);
     }
 
     /**
@@ -175,6 +177,11 @@ class GlideService
      */
     protected function streamAssetDirectly(Filesystem $disk, string $path): StreamedResponse
     {
+        $headers = array_merge(config('glide.default_headers'), [
+            'Content-Type' => $disk->mimeType($path),
+            'Content-Length' => $disk->size($path),
+        ]);
+
         return response()->stream(function () use ($disk, $path) {
             $resource = $disk->readStream($path);
 
@@ -187,10 +194,7 @@ class GlideService
                 echo fread($resource, 1024);
                 flush();
             }
-        }, 200, [
-            'Content-Type' => $disk->mimeType($path),
-            'Content-Length' => $disk->size($path),
-        ]);
+        }, 200, $headers);
     }
 
     /**
