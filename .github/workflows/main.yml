@@ -1,0 +1,112 @@
+name: Build
+
+on:
+  push:
+    paths-ignore: ['*.md']
+  pull_request:
+    paths-ignore: ['*.md']
+    branches: [ master ]
+
+jobs:
+  analysis:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: [8.0]
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+          coverage: none
+      - name: Cache composer dependencies
+        uses: actions/cache@v2
+        env:
+          cache-name: laravel-glide-analysis
+        with:
+          path: ~/.composer
+          key: php-${{ matrix.php }}-build-${{ env.cache-name }}-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            php-${{ matrix.php }}-build-${{ env.cache-name }}-
+            php-${{ matrix.php }}-build-
+            php-${{ matrix.php }}-
+      - name: Install composer dependencies
+        run: composer install --prefer-dist
+      - name: Run phpstan analysis
+        run: composer phpstan-analysis
+      - name: Run phpmd analysis
+        run: composer phpmd-analysis
+      - name: Run phpcpd analysis
+        run: vendor/bin/phpcpd --min-lines=3 --min-tokens=36 src/
+  laravel9:
+    needs: [ analysis ]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: [ 8.1 ]
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+          coverage: none
+      - name: Cache composer dependencies
+        uses: actions/cache@v2
+        env:
+          cache-name: laravel-glide-laravel9
+        with:
+          path: ~/.composer
+          key: php-${{ matrix.php }}-build-${{ env.cache-name }}-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            php-${{ matrix.php }}-build-${{ env.cache-name }}-
+            php-${{ matrix.php }}-build-
+            php-${{ matrix.php }}-
+      - name: Force update laravel version
+        run: composer require "laravel/framework:^9.0" "orchestra/testbench:^7.0" --no-update
+      - name: Remove some dev dependencies
+        run: composer remove "ekino/phpstan-banned-code" "nunomaduro/larastan" "phpmd/phpmd" "phpstan/phpstan-deprecation-rules" "sebastian/phpcpd" --dev --no-update
+      - name: Install composer dependencies
+        run: composer install --prefer-dist
+      - name: Run the test suite
+        run: phpdbg -qrr -dmemory_limit=3G vendor/bin/phpunit
+  laravel9-cov:
+    needs: [ analysis ]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: [ 8.0 ]
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+          coverage: none
+      - name: Cache composer dependencies
+        uses: actions/cache@v2
+        env:
+          cache-name: laravel-glide-laravel9
+        with:
+          path: ~/.composer
+          key: php-${{ matrix.php }}-build-${{ env.cache-name }}-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            php-${{ matrix.php }}-build-${{ env.cache-name }}-
+            php-${{ matrix.php }}-build-
+            php-${{ matrix.php }}-
+      - name: Force update laravel version
+        run: composer require "laravel/framework:^9.0" "orchestra/testbench:^7.0" --no-update
+      - name: Remove some dev dependencies
+        run: composer remove "ekino/phpstan-banned-code" "nunomaduro/larastan" "phpmd/phpmd" "phpstan/phpstan-deprecation-rules" "sebastian/phpcpd" --dev --no-update
+      - name: Install composer dependencies
+        run: composer install --prefer-dist
+      - name: Run the Coverage test suite
+        run: phpdbg -qrr -dmemory_limit=3G vendor/bin/phpunit --coverage-clover=clover.xml
+      - name: Upload test coverage report to codecov.io
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        run: bash <(curl -s https://codecov.io/bash)
