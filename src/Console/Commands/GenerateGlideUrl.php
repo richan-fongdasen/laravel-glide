@@ -12,7 +12,7 @@ class GenerateGlideUrl extends Command
     /**
      * The console command description.
      *
-     * @var string
+     * @var string|null
      */
     protected $description = 'Generate a Glide URL for your asset file.';
 
@@ -98,9 +98,7 @@ class GenerateGlideUrl extends Command
      */
     private function getAssetPath(): string
     {
-        $path = $this->argument('asset_path');
-
-        return (is_string($path)) ? $path : '';
+        return $this->argument('asset_path');
     }
 
     /**

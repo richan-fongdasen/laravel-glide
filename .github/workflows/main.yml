@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: [8.0]
+        php: [8.2]
     steps:
       - uses: actions/checkout@v1
       - name: Setup PHP
@@ -72,13 +72,13 @@ jobs:
       - name: Install composer dependencies
         run: composer install --prefer-dist
       - name: Run the test suite
-        run: phpdbg -qrr -dmemory_limit=3G vendor/bin/phpunit
-  laravel9-cov:
+        run: php -d memory_limit=3G vendor/bin/phpunit
+  laravel10:
     needs: [ analysis ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: [ 8.0 ]
+        php: [ 8.2 ]
     steps:
       - uses: actions/checkout@v1
       - name: Setup PHP
@@ -90,7 +90,7 @@ jobs:
       - name: Cache composer dependencies
         uses: actions/cache@v2
         env:
-          cache-name: laravel-glide-laravel9
+          cache-name: laravel-glide-laravel10
         with:
           path: ~/.composer
           key: php-${{ matrix.php }}-build-${{ env.cache-name }}-${{ hashFiles('**/composer.json') }}
@@ -99,13 +99,45 @@ jobs:
             php-${{ matrix.php }}-build-
             php-${{ matrix.php }}-
       - name: Force update laravel version
-        run: composer require "laravel/framework:^9.0" "orchestra/testbench:^7.0" --no-update
+        run: composer require "laravel/framework:^10.0" "orchestra/testbench:^8.0" --no-update
+      - name: Remove some dev dependencies
+        run: composer remove "ekino/phpstan-banned-code" "nunomaduro/larastan" "phpmd/phpmd" "phpstan/phpstan-deprecation-rules" "sebastian/phpcpd" --dev --no-update
+      - name: Install composer dependencies
+        run: composer install --prefer-dist
+      - name: Run the test suite
+        run: php -d memory_limit=3G vendor/bin/phpunit
+  laravel10-cov:
+    needs: [ analysis ]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: [ 8.2 ]
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+      - name: Cache composer dependencies
+        uses: actions/cache@v2
+        env:
+          cache-name: laravel-glide-laravel10
+        with:
+          path: ~/.composer
+          key: php-${{ matrix.php }}-build-${{ env.cache-name }}-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            php-${{ matrix.php }}-build-${{ env.cache-name }}-
+            php-${{ matrix.php }}-build-
+            php-${{ matrix.php }}-
+      - name: Force update laravel version
+        run: composer require "laravel/framework:^10.0" "orchestra/testbench:^8.0" --no-update
       - name: Remove some dev dependencies
         run: composer remove "ekino/phpstan-banned-code" "nunomaduro/larastan" "phpmd/phpmd" "phpstan/phpstan-deprecation-rules" "sebastian/phpcpd" --dev --no-update
       - name: Install composer dependencies
         run: composer install --prefer-dist
       - name: Run the Coverage test suite
-        run: phpdbg -qrr -dmemory_limit=3G vendor/bin/phpunit --coverage-clover=clover.xml
+        run: php -d memory_limit=3G vendor/bin/phpunit --coverage-clover=clover.xml
       - name: Upload test coverage report to codecov.io
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
