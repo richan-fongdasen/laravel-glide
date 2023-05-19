@@ -63,6 +63,7 @@ class GlideService
      *
      * @param string $diskName
      * @return Filesystem
+     * @throws FilesystemException
      */
     public function getDisk(string $diskName): Filesystem
     {
@@ -89,6 +90,7 @@ class GlideService
      * Create Glide Server
      *
      * @return Server
+     * @throws FilesystemException
      */
     protected function getServer(): Server
     {
@@ -105,6 +107,7 @@ class GlideService
      *
      * @param GlideRequest $request
      * @return StreamedResponse
+     * @throws FilesystemException
      */
     protected function processGlideRequest(GlideRequest $request): StreamedResponse
     {
@@ -126,6 +129,7 @@ class GlideService
      *
      * @param GlideRequest $request
      * @return StreamedResponse
+     * @throws FilesystemException
      */
     public function respondToRequest(GlideRequest $request): StreamedResponse
     {

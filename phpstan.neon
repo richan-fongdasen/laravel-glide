@@ -11,6 +11,8 @@ parameters:
     paths:
         - src
     ignoreErrors:
+        - '#Dynamic call to static method Illuminate\\Filesystem\\FilesystemAdapter::getDriver\(\).#'
+        - '#Dynamic call to static method Illuminate\\Filesystem\\FilesystemAdapter::mimeType\(\).#'
     banned_code:
         nodes:
             - type: Expr_FuncCall

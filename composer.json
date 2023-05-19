@@ -20,7 +20,7 @@
     },
     "require": {
         "php": "^8.0.6",
-        "laravel/framework": "^9.0",
+        "laravel/framework": "^9.0|^10.0",
         "league/glide": "^2.2",
         "nesbot/carbon": "^2.16"
     },
@@ -29,11 +29,11 @@
         "fakerphp/faker": "^1.19",
         "mockery/mockery": "^1.5",
         "nunomaduro/larastan": "^2.0",
-        "orchestra/testbench": "^7.0",
+        "orchestra/testbench": "^7.0|^8.0",
         "phpmd/phpmd": "^2.12",
         "phpstan/phpstan-deprecation-rules": "^1.0",
         "phpstan/phpstan-strict-rules": "^1.2",
-        "phpunit/phpunit": "^9.5",
+        "phpunit/phpunit": "^9.5|^10.0",
         "sebastian/phpcpd": "^6.0"
     },
     "config": {
