@@ -1,4 +1,3 @@
-
 # Laravel Glide
 
 > A simple way to enable Glide in your Laravel Application.
@@ -10,10 +9,10 @@ You can find out more about Glide in [the official documentation](https://glide.
 
 ## Table of contents
 
-* [Setup](#setup)
-* [Configuration](#configuration)
-* [Usage](#usage)
-* [License](#license)
+- [Setup](#setup)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [License](#license)
 
 ## Setup
 
@@ -25,13 +24,13 @@ $ composer require richan-fongdasen/laravel-glide
 
 ## Configuration
 
-You can publish the package configuration using this ``php artisan`` command
+You can publish the package configuration using this `php artisan` command
 
 ```sh
 $ php artisan vendor:publish --provider="RichanFongdasen\Glide\GlideServiceProvider"
 ```
 
-The artisan command above should make you a copy of package configuration located in ``config/glide.php``
+The artisan command above should make you a copy of package configuration located in `config/glide.php`
 
 ```php
 return [
