@@ -2,6 +2,7 @@
 
 namespace RichanFongdasen\Glide\Tests\Features;
 
+use PHPUnit\Framework\Attributes\Test;
 use RichanFongdasen\Glide\Tests\TestCase;
 
 class GenerateUrlFromCommandTest extends TestCase
@@ -56,7 +57,7 @@ class GenerateUrlFromCommandTest extends TestCase
         '270',
     ];
 
-    /** @test */
+    #[Test]
     public function it_throws_exception_when_there_are_no_asset_path_specified(): void
     {
         $this->expectException(\ErrorException::class);
@@ -64,7 +65,7 @@ class GenerateUrlFromCommandTest extends TestCase
         $this->artisan('glide:url', ['asset_path' => '']);
     }
 
-    /** @test */
+    #[Test]
     public function it_throws_exception_when_the_given_value_exceed_the_integer_number_range(): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -75,7 +76,7 @@ class GenerateUrlFromCommandTest extends TestCase
             ->expectsQuestion('(Optional) If you wish to resize the image, please enter the image width: [100 - 2000] ', 2800);
     }
 
-    /** @test */
+    #[Test]
     public function it_throws_exception_when_the_given_value_exceed_the_float_number_range(): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -94,7 +95,7 @@ class GenerateUrlFromCommandTest extends TestCase
             ->expectsQuestion('(Optional) If you wish to adjust the image gamma, please specify the adjustment value: [0.1 - 9.9] ', 12.8);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_generate_the_glide_url_correctly(): void
     {
         $this->artisan('glide:url', ['asset_path' => 'images/dummy.jpg'])
